@@ -1,0 +1,80 @@
+name: Deploy to ECR
+
+on:
+  push:
+    paths:
+      - 'src/**'
+      - 'k8s/**'
+      - 'Dockerfile'
+      - 'pom.xml'
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'k8s/**'
+      - 'Dockerfile'
+      - 'pom.xml'
+
+
+jobs:
+  build:
+    name: Deployment
+    needs: Tests
+    runs-on: ubuntu-latest
+    env:
+      ECR_REPOSITORY: totem_express
+      EKS_CLUSTER_NAME: totem_express-8soat
+      AWS_REGION: us-east-1
+    steps:
+    - name: Set short git commit SHA
+      id: commit
+      uses: prompt/actions-commit-hash@v3
+
+    - name: Check out code
+      uses: actions/checkout@v4
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '22'
+
+    - name: Build, tag, and push image to Amazon ECR
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}        
+        IMAGE_TAG: ${{ steps.commit.outputs.short }}
+      run: |
+        ./mvnw clean package -DskipTests
+        docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} -f ./Dockerfile .
+        docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+
+    - name: Update kube config
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+    - name: Deploy to EKS
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}        
+        IMAGE_TAG: ${{ steps.commit.outputs.short }}
+      run: |
+        sed -i.bak "s|DOCKER_IMAGE|${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}|g" k8s/totem-express-deployment.yaml
+        kubectl apply -f k8s/totem-express-configmap.yaml
+        kubectl apply -f k8s/totem-express-svc.yaml
+        kubectl apply -f k8s/totem-express-secret.yaml
+        kubectl apply -f k8s/totem-express-deployment.yaml
+        kubectl apply -f k8s/totem-express-hpa.yaml
