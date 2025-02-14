@@ -45,6 +45,7 @@ jobs:
       with:
         badges-directory: badges
         generate-branches-badge: true
+        generate-coverage-badge: 'true'
         generate-summary: true
         on-missing-report: 'fail'
         fail-if-coverage-less-than: '80'
