@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: totem-express-svc
+  name: totem-express-users-svc
 spec:
   selector:
-    app: totem-express
+    app: totem-express-users
   ports:
     - port: 80
       targetPort: 8080
