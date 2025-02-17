@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: totem-express
+  name: totem-express-users
   labels:
-    app: totem-express
+    app: totem-express-users
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: totem-express
+      app: totem-express-users
   template:
     metadata:
       labels:
-        app: totem-express
+        app: totem-express-users
     spec              :
       containers:
-        - name: totem-express
+        - name: totem-express-users
           image: DOCKER_IMAGE
           imagePullPolicy: IfNotPresent
           ports:
@@ -23,16 +23,16 @@ spec:
               protocol: TCP
           envFrom:
             - secretRef:
-                name: totem-express-secret
+                name: totem-express-users-secret
             - configMapRef:
-                name: totem-express-configmap
+                name: totem-express-users-configmap
           resources:
             requests:
               cpu: 1000m
-              memory: 1Gi
+              memory: 2Gi
             limits:
               cpu: 1000m
-              memory: 1Gi
+              memory: 3Gi
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
@@ -40,7 +40,7 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 2
             timeoutSeconds: 1
-            failureThreshold: 10
+            failureThreshold: 20
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
@@ -48,4 +48,4 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 2
             timeoutSeconds: 1
-            failureThreshold: 10
+            failureThreshold: 20
