@@ -102,7 +102,7 @@ jobs:
     needs: Tests
     runs-on: ubuntu-latest
     env:
-      ECR_REPOSITORY: totem_express_payments
+      ECR_REPOSITORY: totem_express_users
       EKS_CLUSTER_NAME: totem_express-8soat
       AWS_REGION: us-east-1
     steps:
