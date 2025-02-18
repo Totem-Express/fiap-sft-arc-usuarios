@@ -153,4 +153,3 @@ jobs:
         kubectl apply -f k8s/totem-express-svc.yaml
         kubectl apply -f k8s/totem-express-secret.yaml
         kubectl apply -f k8s/totem-express-deployment.yaml
-        kubectl apply -f k8s/totem-express-hpa.yaml
