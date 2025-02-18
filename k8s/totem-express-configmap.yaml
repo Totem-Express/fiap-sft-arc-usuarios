@@ -4,3 +4,4 @@ metadata:
   name: totem-express-users-configmap
 data:
   SPRING_DATASOURCE_URL: ""
+  SPRING_DYNAMO_ENDPOINT: "http://localhost:4566"
