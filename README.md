@@ -10,38 +10,40 @@ O Event Storm e a documentação dos eventos pivotais pode ser encontrado [no se
 
 ### Kubernetes
 
-
 Para o segundo tech-challenge optamos por utilizar o Minikube de maneira local para montar a nossa infraestrutura, os arquivos de manifesto podem ser encontrados [dentro da pasta k8s](./k8s).
 
 Em relação a nossa escolha arquitetura optamos por:
 
-- Um **Horizontal Pod Autoscalling (HPA)** que irá referenciar o **Deployment** da nossa aplicação, sendo responsável por aumentar e diminuir a quantidade de pods de acordo com as métricas de recursos definidas.
-  Desta forma, conseguimos garantir que a aplicação se matenha estável durante horários de pico (almoço e jantar).
-- Um **Deployment** que inicia um servidor Java com Springboot
-- Um Service do tipo **"Load Balancer"** para expor um ip público e fazer o balanceamento de carga das requisições para os pods
-- Um **StatefulSet**  para iniciar uma imagem do banco **MySQL** e obter um **volume persistente de dados (PV)**
-- Um **Service** para fazer a comunicação interna entre as aplicações do cluster e banco de dados
-- **Secrets** e **Configmaps** para prover as definições de configurações e senhas, tanto para a aplicação java, quanto para o banco de dados.
+Para o quarto tech-challenge, optamos por utilizar o Minikube de forma local para montar nossa infraestrutura. Os arquivos de manifesto podem ser encontrados [na pasta k8s](./k8s).
+
+Em relação à escolha arquitetural, utilizamos os seguintes recursos:
+- Um **Horizontal Pod Autoscaling (HPA)** que referencia o **Deployment** da nossa aplicação, sendo responsável por aumentar e diminuir a quantidade de pods conforme as métricas de recursos definidas. Dessa forma, garantimos que a aplicação se mantenha estável durante horários de pico (almoço e jantar).
+- Um **Deployment** que inicia um servidor Java com Spring Boot.
+- Um **Service** do tipo **"Load Balancer"** para expor um IP público e realizar o balanceamento de carga das requisições para os pods.
+- Um **Service** para a comunicação interna entre as aplicações do cluster e o DynamoDB local.
+
+### Banco de Dados
+- DynamoDB como banco de dados principal, com a configuração do endpoint sendo definida via ConfigMap.
 ---
 
 #### Tecnologias
 
 ![java](https://img.shields.io/badge/Java_22-000?style=for-the-badge&logo=oracle&logoColor=white)
 ![spring](https://img.shields.io/badge/Spring_3-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
-![[mysql]](https://img.shields.io/badge/Mysql_8.4-316192?style=for-the-badge&logo=mysql&logoColor=white)
 ![docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![dynamodb](https://img.shields.io/badge/DynamoDB-4053D6?style=for-the-badge&logo=amazondynamodb&logoColor=white)
 
 Para desenvolver o projeto utilizamos as seguintes técnologias:
 
 - **Java 22** como linguagem de programação backend.
 - **Spring Boot 3** como framework web.
-- **MySQL 8.4** como banco de dados relacional
 - **Docker** como gerenciador de containers.
+- **DynamoDB** como banco de dados não relacional
 
 ### Requerimentos (Rodando de Forma Local)
 
 - É necessário estar com a porta **8080** livre para que o servidor web funcione corretamente.
-- É necessário estar com a porta **3306** livre para que o banco de dados mysql funcione corretamente.
+- É necessário estar com a porta **4566** livre para que o banco de dados dynamodb funcione corretamente.
 
 ### Arquitetura
 
