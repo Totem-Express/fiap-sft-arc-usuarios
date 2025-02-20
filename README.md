@@ -61,7 +61,7 @@ Neste pacote temos a definição das entidades de domínio da nossa aplicação.
 
 3) `Infrastructure`
 
-Neste pacote temos os arquivos de infraestrutura da nossa aplicação, como por exemplo, configuração do banco de dados com o `Spring Data JPA` e a definição das entidades do banco.
+Neste pacote temos os arquivos de infraestrutura da nossa aplicação, como, por exemplo, a configuração do banco de dados utilizando o AWS DynamoDB com o Spring Data DynamoDB e a definição das entidades do banco.
 
 4) `Presentation`
 
@@ -104,7 +104,7 @@ docker compose up
 |-----------------------------|-------------|-------------------------------|-------------------------------| 
 | `/api/users`                | `POST`      |                               | Cria um Usuário.
 | `/api/users/{id}`           | `GET`       | Identificador do usuário      | Retorna as informações do usuário.
-| `/api/users              `  | `GET`       |                               | Retorna as informações do usuário.           
+| `/api/users`                | `GET`       |                               | Retorna as informações do usuário.           
 
 
 ### Testando chamadas às APIs da aplicação
